@@ -6,6 +6,25 @@ def connect_db():
     return psycopg2.connect(os.getenv("DATABASE_URL"))
 
 def create_tables():
+    command = """
+    CREATE TABLE IF NOT EXISTS trips (
+        id SERIAL PRIMARY KEY,
+        destination VARCHAR(255) NOT NULL,
+        departure_date DATE NOT NULL,
+        return_date DATE NOT NULL,
+        activities TEXT,
+        accommodation VARCHAR(255),
+        plan_details TEXT
+    )
+    """
+    try:
+        with connect_db() as conn:
+            with conn.cursor() as cur:
+                cur.execute(command)
+    except Exception as e:
+        print(f"Failed to create tables: {e}")
+
+def create_tables():
     """Create tables in the PostgreSQL database."""
     command = (
         """

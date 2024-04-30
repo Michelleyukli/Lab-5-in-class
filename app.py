@@ -16,6 +16,35 @@ model = genai.GenerativeModel('gemini-pro')
 def connect_db():
     return psycopg2.connect(os.getenv("DATABASE_URL"))
 
+# Create necessary tables
+def create_tables():
+    commands = (
+        """
+        CREATE TABLE IF NOT EXISTS trips (
+            id SERIAL PRIMARY KEY,
+            destination VARCHAR(255),
+            departure_date DATE,
+            return_date DATE,
+            activities TEXT,
+            accommodation VARCHAR(255),
+            plan_details TEXT
+        );
+        """,
+        """
+        CREATE TABLE IF NOT EXISTS feedback (
+            id SERIAL PRIMARY KEY,
+            trip_id INT,
+            rating INT,
+            comments TEXT,
+            FOREIGN KEY (trip_id) REFERENCES trips (id)
+        );
+        """
+    )
+    with connect_db() as conn, conn.cursor() as cur:
+        for command in commands:
+            cur.execute(command)
+        conn.commit()
+
 # Insert trip to the database
 def insert_trip(destination, departure_date, return_date, activities, accommodation, plan_details):
     sql = """INSERT INTO trips (destination, departure_date, return_date, activities, accommodation, plan_details)
@@ -72,6 +101,9 @@ Please include the following details:
 The user's request is:
 {prompt}
 """
+
+# Initialize tables on startup
+create_tables()
 
 # User inputs
 destination = st.text_input("Destination")

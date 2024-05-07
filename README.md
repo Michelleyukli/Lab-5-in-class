@@ -1,4 +1,4 @@
-# AI Trip Planner
+# AI Trip Planner With ChatBot
 
 ## Overview
 A web application that is designed to help users plan their trips with ease using the power of AI, specifically leveraging the capabilities of Gemini. Users can input their travel preferences, and the app generates a detailed trip itinerary including destination, dates, activities, and accommodation options. The application allows users to save their planned trips and provide feedback on generated plans.
@@ -26,6 +26,7 @@ streamlit run app.py
 - API Integration: Learned to integrate the Google Gemini API for generating content based on user prompts.
 - Database Management: Enhanced my understanding of PostgreSQL for handling data persistence with user-generated content and feedback.
 - Streamlit Development: Developed skills in creating interactive web applications using Streamlit.
+- Insert ChatBot to my streamlit app
 
 ### Challenges and Solutions:
 - Database Connectivity Issues: Initially struggled with establishing a reliable connection to PostgreSQL. Resolved by implementing context managers to ensure that database connections are properly opened and closed.

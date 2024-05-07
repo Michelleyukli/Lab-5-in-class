@@ -59,9 +59,13 @@ def insert_trip(destination, departure_date, return_date, activities, accommodat
         cur.execute(sql, (destination, departure_date, return_date, activities, accommodation, plan_details))
         conn.commit()
 
-def generate_content(prompt):
+def generate_content(prompt, is_chat=False):
     """Generate content using Gemini API."""
-    response = model.generate_content(prompt)
+    if is_chat:
+        chat_prompt = f"Answer the user's travel query: {prompt}"
+        response = model.generate_content(chat_prompt)
+    else:
+        response = model.generate_content(prompt)
     return response.text
 
 # Initialize tables on startup
@@ -117,3 +121,21 @@ if st.checkbox("Show Saved Trips"):
                 st.text(f"Plan Details: {trip[6]}")
         else:
             st.error("No saved trips found.")
+
+# Chatbot interface in Streamlit
+if "chat_history" not in st.session_state:
+    st.session_state.chat_history = []
+
+st.sidebar.title("🤖 AI Travel Assistant")
+user_query = st.sidebar.text_input("Ask me anything about your trip!")
+
+if st.sidebar.button("Ask"):
+    if user_query:
+        response = generate_content(user_query, is_chat=True)  # Using the existing generate_content function to integrate with Gemini
+        st.session_state.chat_history.append({"user": user_query, "assistant": response})
+        user_query = ""  # Clear the input after sending
+
+# Display chat history
+for chat in st.session_state.chat_history:
+    st.sidebar.markdown(f"**You:** {chat['user']}")
+    st.sidebar.markdown(f"**AI:** {chat['assistant']}")
